@@ -1,7 +1,14 @@
 import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet, Text, SafeAreaView, Platform } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  SafeAreaView,
+  Platform,
+  View,
+} from "react-native";
 import * as Notifications from "expo-notifications";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 /* Manipulador de eventos de notificações */
 Notifications.setNotificationHandler({
@@ -15,6 +22,8 @@ Notifications.setNotificationHandler({
 });
 
 export default function App() {
+  const [dados, setDados] = useState(null);
+
   useEffect(() => {
     /* Necessário para IOS */
     async function permissoesIos() {
@@ -37,6 +46,7 @@ export default function App() {
     /* Ouvinte de evento para as respostas dadas ás notificações, ou seja, quando o usuário interage (toca) na notificação */
     Notifications.addNotificationResponseReceivedListener((resposta) => {
       console.log(resposta.notification.request.content.data);
+      setDados(resposta.notification.request.content.data);
     });
   }, []);
 
@@ -61,6 +71,12 @@ export default function App() {
       <SafeAreaView style={styles.container}>
         <Text>Exemplo de sistema de notificação local</Text>
         <Button title="Disparar notificações" onPress={enviarMensagem} />
+        {dados && (
+          <View style={styles.conteudo}>
+            <Text> {dados.usuario} </Text>
+            <Text> {dados.cidade} </Text>
+          </View>
+        )}
       </SafeAreaView>
     </>
   );
@@ -72,5 +88,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  conteudo: {
+    marginVertical: 8,
+    backgroundColor: "yellow",
   },
 });
