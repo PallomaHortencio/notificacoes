@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet, Text, SafeAreaView } from "react-native";
+import { Button, StyleSheet, Text, SafeAreaView, Platform } from "react-native";
 import * as Notifications from "expo-notifications";
 import { useEffect } from "react";
 
@@ -36,21 +36,22 @@ export default function App() {
 
     /* Ouvinte de evento para as respostas dadas ás notificações, ou seja, quando o usuário interage (toca) na notificação */
     Notifications.addNotificationResponseReceivedListener((resposta) => {
-      console.log(resposta);
+      console.log(resposta.notification.request.content.data);
     });
   }, []);
 
   const enviarMensagem = async () => {
     const mensagem = {
-      title: "Lembrete!",
-      body: "Não se esqueça de tomar água!",
-      sound: "default", // necessário para ativar o som de ios
+      title: "Lembrete! ⏱",
+      body: "Não se esqueça de tomar água! 👀",
+      sound: Platform.OS === "ios" ? "default" : "", // necessário para ativar o som de ios
+      data: { usuario: "Palloma 👩‍💻", cidade: "São Paulo 🌇" },
     };
 
     /* Função de agendamento de notificação */
     await Notifications.scheduleNotificationAsync({
       content: mensagem,
-      trigger: { seconds: 5 },
+      trigger: { seconds: 3 },
     });
   };
 
